@@ -27,6 +27,7 @@ pipeline {
         stage('list AWS regions'){
             steps{
                 sh '''
+                   export AWS_REGION=eu-north-1
                    python3 python/list_regions.py
                 '''
             }
