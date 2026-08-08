@@ -17,14 +17,20 @@ pipeline {
             }
         }
 
-        stage('Test Python and Boto3') {
+        stage('Setup Python Environment') {
             steps {
                 sh '''
-                    echo "Testing Python..."
-                    python3 --version
+                    rm -rf .venv
 
-                    echo "Testing Boto3..."
-                    python3 -c "import boto3; print('Boto3 version:', boto3.__version__)"
+                    python3 -m venv .venv
+
+                    .venv/bin/python --version
+
+                    .venv/bin/pip install --upgrade pip
+
+                    .venv/bin/pip install boto3
+
+                    .venv/bin/python -c "import boto3; print('Boto3 version:', boto3.__version__)"
                 '''
             }
         }
