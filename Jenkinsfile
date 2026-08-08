@@ -3,34 +3,31 @@ pipeline {
 
     stages {
 
-        stage('Test AWS Authentication') {
+        stage('AWS Authentication') {
             steps {
                 withCredentials([
                     [$class: 'AmazonWebServicesCredentialsBinding',
                      credentialsId: 'AWS']
                 ]) {
                     sh '''
-                        echo "Testing AWS authentication..."
                         aws sts get-caller-identity
                     '''
                 }
             }
         }
 
-        stage('Setup Python Environment') {
+        stage('Install Boto3') {
             steps {
                 sh '''
-                    rm -rf .venv
-
-                    python3 -m venv .venv
-
-                    .venv/bin/python --version
-
-                    .venv/bin/pip install --upgrade pip
-
-                    .venv/bin/pip install boto3
-
-                    .venv/bin/python -c "import boto3; print('Boto3 version:', boto3.__version__)"
+                    python3 -m pip install --user boto3
+                    python3 -c "import boto3; print('Boto3 version:', boto3.__version__)"
+                '''
+            }
+        }
+        stage('list AWS regions'){
+            steps{
+                sh '''
+                   python3 python/list_regions.py
                 '''
             }
         }
